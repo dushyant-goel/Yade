@@ -1,17 +1,65 @@
-# gravity deposition in box, showing how to plot and save history of data,
-# and how to control the simulation while it is running by calling
-# python functions from within the simulation loop
-
+# lanslide on a slope .
 # import yade modules that we will use below
-from yade import pack, plot
+
+DROP_RADIUS = 0.2
+VAR = 0.5
+
+from yade import pack
+from math import *
+# create material that will be used 
+
+#Debris Material
+idConcrete=O.materials.append(FrictMat(young=30e9,poisson=.2,frictionAngle=.6,label="concrete"))
+idSteel=O.materials.append(FrictMat(young=210e9,poisson=.25,frictionAngle=.8,label="steel"))
+idWood=O.materials.append(FrictMat(young=13e9,poisson=.4,frictionAngle=.8,label="wood"))
+
+#Rainfall
+idWater=O.materials.append(FrictMat(young=2.2e9,poisson=.5,frictionAngle=.1,label="water"))
+
+#Slope
+idSoil=O.materials.append(FrictMat(young=80e6,poisson=.4,frictionAngle=.5,label="soil"))
+
+#Rainfall will be a box of spheres
+
+L = 15
+B = 15
+H = 5
+TH = pi/4
+
+O.bodies.append([
+   facet([
+      (-L*cos(TH), L*sin(TH)-0.1, B), 
+      (-L*cos(TH), L*sin(TH)-0.1, -B),
+      (L*cos(TH), -L*sin(TH)-0.1, B) 
+   ], wire=False, material=idSoil),
+   
+   facet([
+      (-L*cos(TH), L*sin(TH)-0.1, -B),
+      (L*cos(TH), -L*sin(TH)-0.1, B), 
+      (L*cos(TH), -L*sin(TH)-0.1, -B)
+   ], wire=False, material=idSoil)
+])
 
 
+# the rain spherepack
+
+rain=pack.SpherePack()
+rain.makeCloud((-L,0,B), (L,H,-B), rMean=DROP_RADIUS, rRelFuzz=VAR)
+
+rain.toSimulation(rot=Quaternion((0,0,1),-TH) ,material=idWater, color=(0,0,1))
+
+# the debris spherepack
+
+rain=pack.SpherePack()
+rain.makeCloud((-L,0,B), (L,H,-B), rMean=DROP_RADIUS, rRelFuzz=VAR)
+
+rain.toSimulation(rot=Quaternion((0,0,1),-TH) ,material=idWater, color=(0,0,1))
+
+# NOTE : figure out irregular shapes
 
 # create slope from facets
 O.bodies.append(facet([(0,10,-5),(10,0,-5),(10,0,5)]))
 O.bodies.append(facet([(10,0,5),(0,10,5),(0,10,-5)]))
-#s=utils.wall((0,0,0),1)
-#O.bodies.append(s)
 # create empty sphere packing
 # sphere packing is not equivalent to particles in simulation, it contains only the pure geometry
 sp=pack.SpherePack()
