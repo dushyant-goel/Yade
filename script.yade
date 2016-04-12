@@ -1,8 +1,7 @@
 # lanslide on a slope .
 # import yade modules that we will use below
 
-DROP_RADIUS = 0.2
-VAR = 0.5
+
 
 from yade import pack
 from math import *
@@ -21,10 +20,20 @@ idSoil=O.materials.append(FrictMat(young=80e6,poisson=.4,frictionAngle=.5,label=
 
 #Rainfall will be a box of spheres
 
+DROP_RADIUS = 0.2
+VAR = 0.5
+
+H1 = 5
 L = 15
 B = 15
 H = 5
 TH = pi/4
+
+
+# TYPE = { Steel:{material:idSteel,color:},
+#          Wood:{material:idWood,color:}.
+#          Concrete:{material:idConcrete,color:}        
+#    }
 
 O.bodies.append([
    facet([
@@ -50,23 +59,12 @@ rain.toSimulation(rot=Quaternion((0,0,1),-TH) ,material=idWater, color=(0,0,1))
 
 # the debris spherepack
 
-steel = pack.SpherePack()
-rain.makeCloud((-L,0,B), (L,H,-B), rMean=DROP_RADIUS, rRelFuzz=VAR)
+debris = pack.SpherePack()
+debris.makeCloud((-L,H,B), (L,H+H1,-B), rMean=DROP_RADIUS, rRelFuzz=VAR)
 
-rain.toSimulation(rot=Quaternion((0,0,1),-TH) ,material=idWater, color=(0,0,1))
+debris.toSimulation(rot=Quaternion((0,0,1),-TH) , material=idSteel, color=(1,0,0))
 
-# NOTE : figure out irregular shapes
-
-# create slope from facets
-O.bodies.append(facet([(0,10,-5),(10,0,-5),(10,0,5)]))
-O.bodies.append(facet([(10,0,5),(0,10,5),(0,10,-5)]))
-# create empty sphere packing
-# sphere packing is not equivalent to particles in simulation, it contains only the pure geometry
-sp=pack.SpherePack()
-# generate randomly spheres with uniform radius distribution
-sp.makeCloud((5,15,2.5),(10,25,-2.5),rMean=.2,rRelFuzz=.5)
-# add the sphere pack to the simulation
-sp.toSimulation()
+# physics
 
 O.engines=[
    ForceResetter(),
@@ -81,17 +79,6 @@ O.engines=[
    
    
 ]
+
 O.dt=PWaveTimeStep()
-
-# enable energy tracking; any simulation parts supporting it
-# can create and update arbitrary energy types, which can be
-# accessed as O.energy['energyName'] subsequently
-O.trackEnergy=True
-
-# if the unbalanced forces goes below .05, the packing
-# is considered stabilized, therefore we stop collected
-# data history and stop
-
-
-O.saveTmp()
 
