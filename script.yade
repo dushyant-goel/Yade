@@ -21,12 +21,12 @@ idSoil=O.materials.append(FrictMat(young=80e6,poisson=.4,frictionAngle=.5,label=
 #Rainfall will be a box of spheres
 
 DROP_RADIUS = 0.2
-VAR = 0.5
+VAR = 0.01
 
 H1 = 5
-L = 15
-B = 15
-H = 5
+L = 150
+B = 150
+H = 0.4
 TH = pi/4
 
 
@@ -53,14 +53,14 @@ O.bodies.append([
 # the rain spherepack
 
 rain=pack.SpherePack()
-rain.makeCloud((-L,0,B), (L,H,-B), rMean=DROP_RADIUS, rRelFuzz=VAR)
+rain.makeCloud((-L,0,B), (L,H,-B), rMean=DROP_RADIUS, rRelFuzz=0)
 
 rain.toSimulation(rot=Quaternion((0,0,1),-TH) ,material=idWater, color=(0,0,1))
 
 # the debris spherepack
 
 debris = pack.SpherePack()
-debris.makeCloud((-L,H,B), (L,H+H1,-B), rMean=DROP_RADIUS, rRelFuzz=VAR)
+debris.makeCloud((-L,H,B), (L,H+H1,-B), rMean=10*DROP_RADIUS, rRelFuzz=VAR)
 
 debris.toSimulation(rot=Quaternion((0,0,1),-TH) , material=idSteel, color=(1,0,0))
 
@@ -80,5 +80,5 @@ O.engines=[
    
 ]
 
-O.dt=PWaveTimeStep()
+O.dt=5*PWaveTimeStep()
 
