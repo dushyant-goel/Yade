@@ -11,5 +11,9 @@ DROP_MEAN_VARIATON = 0.5
 sp=pack.SpherePack()
 sp.makeCloud(RAINFALL_BOX_EDGE1,RAINFALL_BOX_EDGE2,DROP_MEAN_RADIUS,DROP_MEAN_VARIATION)
 
-sp.toSimulation(material=idWater)
+sp.toSimulation(material=idWater) 
+
+#debris 
+
+# NOTE : figure out irregular shapes
 
