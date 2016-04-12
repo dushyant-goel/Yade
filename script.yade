@@ -50,7 +50,7 @@ rain.toSimulation(rot=Quaternion((0,0,1),-TH) ,material=idWater, color=(0,0,1))
 
 # the debris spherepack
 
-rain=pack.SpherePack()
+steel = pack.SpherePack()
 rain.makeCloud((-L,0,B), (L,H,-B), rMean=DROP_RADIUS, rRelFuzz=VAR)
 
 rain.toSimulation(rot=Quaternion((0,0,1),-TH) ,material=idWater, color=(0,0,1))
