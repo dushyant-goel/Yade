@@ -10,6 +10,7 @@ from yade import pack, plot
 # create slope from facets
 O.bodies.append(facet([(0,10,-5),(10,0,-5),(10,0,5)]))
 O.bodies.append(facet([(10,0,5),(0,10,5),(0,10,-5)]))
+s=utils.wall((0,0,0),0)
 
 # create empty sphere packing
 # sphere packing is not equivalent to particles in simulation, it contains only the pure geometry
