@@ -1,7 +1,14 @@
+DROP_RADIUS = 0.2
+VAR = 0.01
+
+H1 = 5
+L = 15
+B = 15
+H = 0.4
+TH = pi/4
+
 # lanslide on a slope .
 # import yade modules that we will use below
-
-
 
 from yade import pack
 from math import *
@@ -20,21 +27,6 @@ idSoil=O.materials.append(FrictMat(young=80e6,poisson=.4,frictionAngle=.5,label=
 
 #Rainfall will be a box of spheres
 
-DROP_RADIUS = 0.2
-VAR = 0.01
-
-H1 = 5
-L = 150
-B = 150
-H = 0.4
-TH = pi/4
-
-
-# TYPE = { Steel:{material:idSteel,color:},
-#          Wood:{material:idWood,color:}.
-#          Concrete:{material:idConcrete,color:}        
-#    }
-
 O.bodies.append([
    facet([
       (-L*cos(TH), L*sin(TH)-0.1, B), 
@@ -49,7 +41,6 @@ O.bodies.append([
    ], wire=False, material=idSoil)
 ])
 
-
 # the rain spherepack
 
 rain=pack.SpherePack()
@@ -60,7 +51,7 @@ rain.toSimulation(rot=Quaternion((0,0,1),-TH) ,material=idWater, color=(0,0,1))
 # the debris spherepack
 
 debris = pack.SpherePack()
-debris.makeCloud((-L,H,B), (L,H+H1,-B), rMean=10*DROP_RADIUS, rRelFuzz=VAR)
+debris.makeCloud((-L,H,B), (L,H+H1,-B), rMean=4*DROP_RADIUS, rRelFuzz=VAR)
 
 debris.toSimulation(rot=Quaternion((0,0,1),-TH) , material=idSteel, color=(1,0,0))
 
@@ -76,7 +67,6 @@ O.engines=[
       [Law2_L3Geom_FrictPhys_ElPerfPl()]
    ),
    NewtonIntegrator(gravity=(0,-9.81,0),damping=0.4),
-   
    
 ]
 
